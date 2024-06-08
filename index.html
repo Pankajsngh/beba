@@ -96,7 +96,6 @@
     .buttons {
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
     }
 
     .button {
@@ -109,7 +108,6 @@
       transition: background-color 0.3s ease;
       width: 48%;
       text-align: center;
-      margin-top: 10px;
     }
 
     .button:hover {
@@ -126,31 +124,10 @@
       background-color: #c82333;
     }
 
-    #review-button {
-      background-color: #ffc107;
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    #review-button:hover {
-      background-color: #e0a800;
-    }
-
     #question-counter,
     #score-counter {
       margin-bottom: 20px;
       font-weight: 600;
-    }
-
-    .review-container {
-      text-align: left;
-      margin-top: 20px;
-    }
-
-    .review-question {
-      margin-bottom: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ddd;
     }
   </style>
 </head>
@@ -172,14 +149,11 @@
       <button id="next-button" class="button" onclick="nextQuestion()">Next</button>
     </div>
     <button id="reset-button" class="button" onclick="resetScore()">Reset Score</button>
-    <button id="review-button" class="button" onclick="reviewIncorrectAnswers()">Review Incorrect Answers</button>
-    <div id="review-container" class="review-container"></div>
   </div>
   <script>
     let currentQuestionIndex = 0;
     let questions = [];
     let score = 0;
-    let incorrectAnswers = [];
 
     // Fetch the quiz data
     fetch('quiz_data_corrected.json')
@@ -218,7 +192,7 @@
           <h2>${question.question}</h2>
           <ul class="options">
             ${question.options.map((option, index) => `
-              <li class="option" id="option${index}" ontouchstart="checkAnswer('${option}', ${index})" onclick="checkAnswer('${option}', ${index})">${option}</li>
+              <li class="option" id="option${index}" onclick="checkAnswer('${option}', ${index})">${option}</li>
             `).join('')}
           </ul>
         </div>
@@ -241,12 +215,6 @@
       } else {
         selectedElement.classList.add('incorrect');
         correctElement.classList.add('correct');
-        incorrectAnswers.push({
-          question: questions[currentQuestionIndex].question,
-          options: questions[currentQuestionIndex].options,
-          userAnswer: selectedOption,
-          correctAnswer: correctAnswer
-        });
       }
 
       document.getElementById('correct-answer').style.display = 'block';
@@ -254,7 +222,6 @@
 
       // Disable all options after selection
       document.querySelectorAll('.option').forEach(option => {
-        option.ontouchstart = null;
         option.onclick = null;
       });
     }
@@ -275,29 +242,8 @@
 
     function resetScore() {
       score = 0;
-      incorrectAnswers = [];
       updateScoreCounter();
       loadQuestion();
-    }
-
-    function reviewIncorrectAnswers() {
-      const reviewContainer = document.getElementById('review-container');
-      reviewContainer.innerHTML = '';
-      incorrectAnswers.forEach((item, index) => {
-        reviewContainer.innerHTML += `
-          <div class="review-question">
-            <h3>Question ${index + 1}</h3>
-            <p>${item.question}</p>
-            <ul>
-              ${item.options.map(option => `
-                <li style="color: ${option === item.correctAnswer ? 'green' : option === item.userAnswer ? 'red' : 'black'};">${option}</li>
-             
-              </ul>
-              <p><strong>Your Answer:</strong> ${item.userAnswer}</p>
-              <p><strong>Correct Answer:</strong> ${item.correctAnswer}</p>
-            </div>
-          `;
-      });
     }
 
     function updateQuestionCounter() {
