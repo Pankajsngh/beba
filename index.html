@@ -124,10 +124,46 @@
       background-color: #c82333;
     }
 
+    #revision-button {
+      background-color: #ffc107;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    #revision-button:hover {
+      background-color: #e0a800;
+    }
+
     #question-counter,
     #score-counter {
       margin-bottom: 20px;
       font-weight: 600;
+    }
+
+    #revision-container {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .revision-card {
+      background: #fff3cd;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ffeeba;
+    }
+
+    .revision-card h3 {
+      margin: 0 0 10px 0;
+    }
+
+    .revision-card ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .revision-card li {
+      padding: 5px;
     }
   </style>
 </head>
@@ -149,13 +185,15 @@
       <button id="next-button" class="button" onclick="nextQuestion()">Next</button>
     </div>
     <button id="reset-button" class="button" onclick="resetScore()">Reset Score</button>
+    <button id="revision-button" class="button" onclick="showRevisions()">Revision</button>
+    <div id="revision-container"></div>
   </div>
   <script>
     let currentQuestionIndex = 0;
     let questions = [];
     let score = 0;
+    let wrongAnswers = [];
 
-    // Fetch the quiz data
     fetch('quiz_data_corrected.json')
       .then(response => response.json())
       .then(data => {
@@ -215,12 +253,17 @@
       } else {
         selectedElement.classList.add('incorrect');
         correctElement.classList.add('correct');
+        wrongAnswers.push({
+          question: questions[currentQuestionIndex].question,
+          options: questions[currentQuestionIndex].options,
+          correct: correctAnswer,
+          selected: selectedOption
+        });
       }
 
       document.getElementById('correct-answer').style.display = 'block';
       document.getElementById('correct-answer').innerHTML = `Correct Answer: ${correctAnswer}`;
 
-      // Disable all options after selection
       document.querySelectorAll('.option').forEach(option => {
         option.onclick = null;
       });
@@ -254,7 +297,31 @@
       document.getElementById('score-counter').innerHTML = `Score: ${score}`;
     }
 
-    // Hide navigation buttons initially
+    function showRevisions() {
+      const revisionContainer = document.getElementById('revision-container');
+      revisionContainer.innerHTML = '';
+
+      if (wrongAnswers.length > 0) {
+        wrongAnswers.forEach(answer => {
+          const card = document.createElement('div');
+          card.classList.add('revision-card');
+          card.innerHTML = `
+            <h3>${answer.question}</h3>
+            <ul>
+              ${answer.options.map(option => `
+                <li class="${option === answer.correct ? 'correct' : option === answer.selected ? 'incorrect' : ''}">${option}</li>
+              `).join('')}
+            </ul>
+          `;
+          revisionContainer.appendChild(card);
+        });
+        revisionContainer.style.display = 'block';
+      } else {
+        revisionContainer.innerHTML = '<p>No incorrect answers to review.</p>';
+        revisionContainer.style.display = 'block';
+      }
+    }
+
     document.getElementById('prev-button').style.display = 'none';
     document.getElementById('next-button').style.display = 'none';
   </script>
