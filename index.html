@@ -6,22 +6,22 @@
   <title>Quiz</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
-
+    
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: #f0f2f5;
+      background-color: #f7f9fc;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       margin: 0;
       padding: 10px;
     }
 
     .container {
-      background: #ffffff;
+      background: #fff;
       padding: 20px;
-      border-radius: 16px;
+      border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       max-width: 400px;
       width: 100%;
@@ -35,27 +35,22 @@
 
     .input-group {
       margin-bottom: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .input-group input {
-      width: 80px;
-      padding: 10px;
-      border-radius: 8px;
+      width: 60px;
+      padding: 5px;
+      border-radius: 5px;
       border: 1px solid #ccc;
       margin-right: 10px;
-      font-size: 16px;
     }
 
     .input-group button {
       padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       background-color: #007bff;
       color: white;
-      font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
@@ -75,13 +70,12 @@
     }
 
     .option {
-      background: #f0f2f5;
-      border-radius: 8px;
-      padding: 15px;
+      background: #f4f4f4;
+      border-radius: 5px;
+      padding: 10px;
       margin-bottom: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
-      font-size: 16px;
     }
 
     .option:hover {
@@ -102,19 +96,17 @@
     .buttons {
       display: flex;
       justify-content: space-between;
-      margin-top: 20px;
     }
 
     .button {
       padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       background-color: #007bff;
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
       width: 48%;
-      font-size: 16px;
       text-align: center;
     }
 
@@ -126,7 +118,6 @@
       background-color: #dc3545;
       width: 100%;
       margin-top: 20px;
-      font-size: 16px;
     }
 
     #reset-button:hover {
@@ -137,7 +128,6 @@
       background-color: #ffc107;
       width: 100%;
       margin-top: 20px;
-      font-size: 16px;
     }
 
     #summary-button:hover {
@@ -152,15 +142,13 @@
 
     .summary-item {
       background: #f4f4f4;
-      border-radius: 8px;
-      padding: 15px;
+      border-radius: 5px;
+      padding: 10px;
       margin-bottom: 20px;
-      text-align: left;
     }
 
     .summary-item p {
       margin: 5px 0;
-      font-size: 16px;
     }
   </style>
 </head>
@@ -168,9 +156,9 @@
   <div class="container">
     <h1>Quiz</h1>
     <div class="input-group">
-      <label for="start-question" style="margin-right: 10px;">Start at:</label>
+      <label for="start-question">Enter the question number to start with:</label>
       <input type="number" id="start-question" min="1" value="1">
-      <button onclick="startQuiz()">Start</button>
+      <button onclick="startQuiz()">Start Quiz</button>
     </div>
     <div id="question-counter"></div>
     <div class="question-container" id="quiz-container"></div>
@@ -294,7 +282,7 @@
         <h2>Summary of Incorrect Answers</h2>
         ${incorrectAnswers.map(answer => `
           <div class="summary-item">
-                      <p><strong>Question:</strong> ${answer.question}</p>
+            <p><strong>Question:</strong> ${answer.question}</p>
             <p><strong>Your Answer:</strong> ${answer.selected}</p>
             <p><strong>Correct Answer:</strong> ${answer.correct}</p>
             <ul class="options">
@@ -312,6 +300,7 @@
     }
 
     function updateQuestionCounter() {
+      document.getElement
       document.getElementById('question-counter').innerHTML = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
     }
 
@@ -321,5 +310,3 @@
   </script>
 </body>
 </html>
-
-           
