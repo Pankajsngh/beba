@@ -124,6 +124,16 @@
       background-color: #c82333;
     }
 
+    #summary-button {
+      background-color: #ffc107;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    #summary-button:hover {
+      background-color: #e0a800;
+    }
+
     #question-counter,
     #score-counter {
       margin-bottom: 20px;
@@ -290,12 +300,13 @@
     }
 
     function updateQuestionCounter() {
-      document.getElementById('question-counter').innerHTML = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        document.getElementById('question-counter').innerHTML = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
     }
 
     function updateScoreCounter() {
-      document.getElementById('score-counter').document.getElementById('score-counter').innerHTML = `Score: ${score}`;
+      document.getElementById('score-counter').innerHTML = `Score: ${score}`;
     }
   </script>
 </body>
 </html>
+
