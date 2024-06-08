@@ -130,38 +130,26 @@
       font-weight: 600;
     }
 
-    #revision-summary {
-      margin-top: 20px;
-    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
 
-    .revision-item {
-      margin-bottom: 20px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background: #fff;
-    }
+      .input-group input {
+        width: 50px;
+      }
 
-    .revision-item:not(:last-child) {
-      border-bottom: 2px solid #e0e0e0;
-    }
+      .input-group button {
+        padding: 5px 10px;
+      }
 
-    .revision-correct {
-      color: #28a745;
-      font-weight: bold;
-    }
+      .button {
+        padding: 5px 10px;
+      }
 
-    .revision-incorrect {
-      color: #dc3545;
-      font-weight: bold;
-    }
-
-    .revision-your-answer {
-      font-weight: bold;
-    }
-
-    .revision-correct-answer {
-      font-weight: bold;
+      #reset-button {
+        padding: 5px 10px;
+      }
     }
   </style>
 </head>
@@ -171,7 +159,7 @@
     <div class="input-group">
       <label for="start-question">Enter the question number to start with:</label>
       <input type="number" id="start-question" min="1" value="1">
-      <button id="start-button" onclick="startQuiz()">Start Quiz</button>
+      <button onclick="startQuiz()">Start Quiz</button>
     </div>
     <div id="question-counter"></div>
     <div class="question-container" id="quiz-container"></div>
@@ -255,8 +243,8 @@
         incorrectAnswers.push({
           question: questions[currentQuestionIndex].question,
           options: questions[currentQuestionIndex].options,
-          correct: correctAnswer,
-          yourAnswer: selectedOption
+          yourAnswer: selectedOption,
+          correct: correctAnswer
         });
       }
 
@@ -285,6 +273,7 @@
 
     function resetScore() {
       score = 0;
+      incorrectAnswers = [];
       updateScoreCounter();
       loadQuestion();
     }
@@ -298,14 +287,14 @@
             <h3>${index + 1}. ${item.question}</h3>
             <ul class="options">
               ${item.options.map(option => `
-                <li class="${option === item.correct ? 'revision-correct' : option === item.yourAnswer ? '
-revision-incorrect' : ''}">
+                <li class="option ${option === item.yourAnswer ? 'incorrect' : ''} ${option === item.correct ? 'correct' : ''}">
                   ${option}
                 </li>
               `).join('')}
             </ul>
             <p class="revision-your-answer">Your Answer: ${item.yourAnswer}</p>
             <p class="revision-correct-answer">Correct Answer: ${item.correct}</p>
+            <hr>
           </div>
         `;
         revisionSummary.innerHTML += questionHtml;
@@ -313,7 +302,8 @@ revision-incorrect' : ''}">
     }
 
     function updateQuestionCounter() {
-      document.getElementById('question-counter').innerHTML = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+      document.getElement
+      getElementById('question-counter').innerHTML = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
     }
 
     function updateScoreCounter() {
