@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
-    
+
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: #f7f9fc;
@@ -31,15 +32,19 @@
     h1 {
       color: #333;
       margin-bottom: 20px;
+      font-size: 24px;
     }
 
     .input-group {
       margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .input-group input {
       width: 60px;
-      padding: 5px;
+      padding: 10px;
       border-radius: 5px;
       border: 1px solid #ccc;
       margin-right: 10px;
@@ -96,6 +101,7 @@
     .buttons {
       display: flex;
       justify-content: space-between;
+      margin-top: 20px;
     }
 
     .button {
@@ -124,31 +130,39 @@
       background-color: #c82333;
     }
 
-    #summary-button {
-      background-color: #ffc107;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    #summary-button:hover {
-      background-color: #e0a800;
-    }
-
     #question-counter,
     #score-counter {
       margin-bottom: 20px;
       font-weight: 600;
     }
 
-    .summary-item {
-      background: #f4f4f4;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 20px;
+    #summary-button {
+      background-color: #ffc107;
+      width: 100%;
+      margin-top: 10px;
     }
 
-    .summary-item p {
-      margin: 5px 0;
+    #summary-button:hover {
+      background-color: #e0a800;
+    }
+
+    #summary-container {
+      display: none;
+      text-align: left;
+    }
+
+    #summary-container h2 {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+
+    #summary-container ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #summary-container li {
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -156,9 +170,9 @@
   <div class="container">
     <h1>Quiz</h1>
     <div class="input-group">
-      <label for="start-question">Enter the question number to start with:</label>
+      <label for="start-question">Start at:</label>
       <input type="number" id="start-question" min="1" value="1">
-      <button onclick="startQuiz()">Start Quiz</button>
+      <button onclick="startQuiz()">Start</button>
     </div>
     <div id="question-counter"></div>
     <div class="question-container" id="quiz-container"></div>
@@ -171,6 +185,10 @@
     </div>
     <button id="reset-button" class="button" onclick="resetScore()">Reset Score</button>
     <button id="summary-button" class="button" onclick="showSummary()">Show Summary</button>
+    <div id="summary-container">
+      <h2>Summary of Incorrect Answers</h2>
+      <ul id="summary-list"></ul>
+    </div>
   </div>
   <script>
     let currentQuestionIndex = 0;
@@ -241,8 +259,7 @@
         incorrectAnswers.push({
           question: questions[currentQuestionIndex].question,
           selected: selectedOption,
-          correct: correctAnswer,
-          options: questions[currentQuestionIndex].options
+          correct: correctAnswer
         });
       }
 
@@ -271,42 +288,45 @@
 
     function resetScore() {
       score = 0;
-      incorrectAnswers = [];
       updateScoreCounter();
       loadQuestion();
-    }
-
-    function showSummary() {
-      const summaryContainer = document.createElement('div');
-      summaryContainer.innerHTML = `
-        <h2>Summary of Incorrect Answers</h2>
-        ${incorrectAnswers.map(answer => `
-          <div class="summary-item">
-            <p><strong>Question:</strong> ${answer.question}</p>
-            <p><strong>Your Answer:</strong> ${answer.selected}</p>
-            <p><strong>Correct Answer:</strong> ${answer.correct}</p>
-            <ul class="options">
-              ${answer.options.map(option => `
-                <li class="option ${option === answer.correct ? 'correct' : option === answer.selected ? 'incorrect' : ''}">
-                  ${option}
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-        `).join('')}
-      `;
-      document.body.innerHTML = '';
-      document.body.appendChild(summaryContainer);
+      incorrectAnswers = [];
+      document.getElementById('summary-container').style.display = 'none';
     }
 
     function updateQuestionCounter() {
-      document.getElement
       document.getElementById('question-counter').innerHTML = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
     }
 
     function updateScoreCounter() {
       document.getElementById('score-counter').innerHTML = `Score: ${score}`;
     }
+
+    function showSummary() {
+      const summaryContainer = document.getElementById('summary-container');
+      const summaryList = document.getElementById('summary-list');
+      summaryList.innerHTML = '';
+
+      if (incorrectAnswers.length === 0) {
+        summaryContainer.innerHTML = '<p>No incorrect answers to show.</p>';
+      } else {
+        incorrectAnswers.forEach((item, index) => {
+          const listItem = document.createElement('li');
+          listItem.innerHTML = `
+            <strong>Question ${index + 1}:</strong> ${item.question}<br>
+            <strong>Your answer:</strong> ${item.selected}<br>
+            <strong>Correct answer:</strong> ${item.correct}
+          `;
+          summaryList.appendChild(listItem);
+        });
+      }
+
+      summaryContainer.style.display = 'block';
+    }
+
+    // Hide navigation buttons initially
+    document.getElementById('prev-button').style.display = 'none';
+    document.getElementById('next-button').style.display = 'none';
   </script>
 </body>
 </html>
