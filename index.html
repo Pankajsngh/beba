@@ -124,31 +124,10 @@
       background-color: #c82333;
     }
 
-    #summary-button {
-      background-color: #ffc107;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    #summary-button:hover {
-      background-color: #e0a800;
-    }
-
     #question-counter,
     #score-counter {
       margin-bottom: 20px;
       font-weight: 600;
-    }
-
-    .summary-item {
-      background: #f4f4f4;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
-
-    .summary-item p {
-      margin: 5px 0;
     }
   </style>
 </head>
@@ -170,13 +149,11 @@
       <button id="next-button" class="button" onclick="nextQuestion()">Next</button>
     </div>
     <button id="reset-button" class="button" onclick="resetScore()">Reset Score</button>
-    <button id="summary-button" class="button" onclick="showSummary()">Show Summary</button>
   </div>
   <script>
     let currentQuestionIndex = 0;
     let questions = [];
     let score = 0;
-    let incorrectAnswers = [];
 
     // Fetch the quiz data
     fetch('quiz_data_corrected.json')
@@ -238,12 +215,6 @@
       } else {
         selectedElement.classList.add('incorrect');
         correctElement.classList.add('correct');
-        incorrectAnswers.push({
-          question: questions[currentQuestionIndex].question,
-          selected: selectedOption,
-          correct: correctAnswer,
-          options: questions[currentQuestionIndex].options
-        });
       }
 
       document.getElementById('correct-answer').style.display = 'block';
@@ -271,42 +242,21 @@
 
     function resetScore() {
       score = 0;
-      incorrectAnswers = [];
       updateScoreCounter();
       loadQuestion();
     }
 
-    function showSummary() {
-      const summaryContainer = document.createElement('div');
-      summaryContainer.innerHTML = `
-        <h2>Summary of Incorrect Answers</h2>
-        ${incorrectAnswers.map(answer => `
-          <div class="summary-item">
-            <p><strong>Question:</strong> ${answer.question}</p>
-            <p><strong>Your Answer:</strong> ${answer.selected}</p>
-            <p><strong>Correct Answer:</strong> ${answer.correct}</p>
-            <ul class="options">
-              ${answer.options.map(option => `
-                <li class="option ${option === answer.correct ? 'correct' : option === answer.selected ? 'incorrect' : ''}">
-                  ${option}
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-        `).join('')}
-      `;
-      document.body.innerHTML = '';
-      document.body.appendChild(summaryContainer);
-    }
-
     function updateQuestionCounter() {
-      document.getElement
       document.getElementById('question-counter').innerHTML = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
     }
 
     function updateScoreCounter() {
       document.getElementById('score-counter').innerHTML = `Score: ${score}`;
     }
+
+    // Hide navigation buttons initially
+    document.getElementById('prev-button').style.display = 'none';
+    document.getElementById('next-button').style.display = 'none';
   </script>
 </body>
 </html>
