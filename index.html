@@ -9,19 +9,19 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: #f0f2f5;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       margin: 0;
       padding: 10px;
     }
 
     .container {
-      background: #ffffff;
+      background: #fff;
       padding: 20px;
-      border-radius: 16px;
+      border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       max-width: 400px;
       width: 100%;
@@ -35,27 +35,22 @@
 
     .input-group {
       margin-bottom: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .input-group input {
-      width: 80px;
-      padding: 10px;
-      border-radius: 8px;
+      width: 60px;
+      padding: 5px;
+      border-radius: 5px;
       border: 1px solid #ccc;
       margin-right: 10px;
-      font-size: 16px;
     }
 
     .input-group button {
       padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       background-color: #007bff;
       color: white;
-      font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
@@ -75,13 +70,12 @@
     }
 
     .option {
-      background: #f0f2f5;
-      border-radius: 8px;
-      padding: 15px;
+      background: #f4f4f4;
+      border-radius: 5px;
+      padding: 10px;
       margin-bottom: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
-      font-size: 16px;
     }
 
     .option:hover {
@@ -102,19 +96,17 @@
     .buttons {
       display: flex;
       justify-content: space-between;
-      margin-top: 20px;
     }
 
     .button {
       padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       background-color: #007bff;
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
       width: 48%;
-      font-size: 16px;
       text-align: center;
     }
 
@@ -126,22 +118,10 @@
       background-color: #dc3545;
       width: 100%;
       margin-top: 20px;
-      font-size: 16px;
     }
 
     #reset-button:hover {
       background-color: #c82333;
-    }
-
-    #summary-button {
-      background-color: #ffc107;
-      width: 100%;
-      margin-top: 20px;
-      font-size: 16px;
-    }
-
-    #summary-button:hover {
-      background-color: #e0a800;
     }
 
     #question-counter,
@@ -150,17 +130,45 @@
       font-weight: 600;
     }
 
-    .summary-item {
-      background: #f4f4f4;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-      text-align: left;
+    .summary-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #ffcc00;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      margin-top: 20px;
     }
 
-    .summary-item p {
-      margin: 5px 0;
-      font-size: 16px;
+    .summary-button:hover {
+      background-color: #ff9900;
+    }
+
+    .summary-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .summary-container h2 {
+      margin-bottom: 20px;
+    }
+
+    .summary-container .option.correct {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+    }
+
+    .summary-container .option.incorrect {
+      background-color: #dc3545;
+      color: white;
     }
   </style>
 </head>
@@ -168,9 +176,9 @@
   <div class="container">
     <h1>Quiz</h1>
     <div class="input-group">
-      <label for="start-question" style="margin-right: 10px;">Start at:</label>
+      <label for="start-question">Enter the question number to start with:</label>
       <input type="number" id="start-question" min="1" value="1">
-      <button onclick="startQuiz()">Start</button>
+      <button onclick="startQuiz()">Start Quiz</button>
     </div>
     <div id="question-counter"></div>
     <div class="question-container" id="quiz-container"></div>
@@ -182,7 +190,7 @@
       <button id="next-button" class="button" onclick="nextQuestion()">Next</button>
     </div>
     <button id="reset-button" class="button" onclick="resetScore()">Reset Score</button>
-    <button id="summary-button" class="button" onclick="showSummary()">Show Summary</button>
+    <button id="summary-button" class="summary-button" onclick="showSummary()">Review Incorrect Answers</button>
   </div>
   <script>
     let currentQuestionIndex = 0;
@@ -190,7 +198,6 @@
     let score = 0;
     let incorrectAnswers = [];
 
-    // Fetch the quiz data
     fetch('quiz_data_corrected.json')
       .then(response => response.json())
       .then(data => {
@@ -261,7 +268,6 @@
       document.getElementById('correct-answer').style.display = 'block';
       document.getElementById('correct-answer').innerHTML = `Correct Answer: ${correctAnswer}`;
 
-      // Disable all options after selection
       document.querySelectorAll('.option').forEach(option => {
         option.onclick = null;
       });
@@ -283,23 +289,24 @@
 
     function resetScore() {
       score = 0;
-      incorrectAnswers = [];
       updateScoreCounter();
       loadQuestion();
+      incorrectAnswers = [];
     }
 
     function showSummary() {
       const summaryContainer = document.createElement('div');
+      summaryContainer.classList.add('summary-container');
       summaryContainer.innerHTML = `
-        <h2>Summary of Incorrect Answers</h2>
-        ${incorrectAnswers.map(answer => `
+        <h2>Incorrect Answers Summary</h2>
+                ${incorrectAnswers.map(answer => `
           <div class="summary-item">
-                      <p><strong>Question:</strong> ${answer.question}</p>
-            <p><strong>Your Answer:</strong> ${answer.selected}</p>
-            <p><strong>Correct Answer:</strong> ${answer.correct}</p>
+            <p><strong>Question:</strong> ${answer.question}</p>
+            <p><strong>Your Answer:</strong> <span class="option incorrect">${answer.selected}</span></p>
+            <p><strong>Correct Answer:</strong> <span class="option correct">${answer.correct}</span></p>
             <ul class="options">
               ${answer.options.map(option => `
-                <li class="option ${option === answer.correct ? 'correct' : option === answer.selected ? 'incorrect' : ''}">
+                <li class="option ${option === answer.correct ? 'correct' : (option === answer.selected ? 'incorrect' : '')}">
                   ${option}
                 </li>
               `).join('')}
@@ -307,8 +314,10 @@
           </div>
         `).join('')}
       `;
-      document.body.innerHTML = '';
-      document.body.appendChild(summaryContainer);
+
+      const container = document.querySelector('.container');
+      container.appendChild(summaryContainer);
+      summaryContainer.scrollIntoView({ behavior: 'smooth' });
     }
 
     function updateQuestionCounter() {
@@ -318,8 +327,11 @@
     function updateScoreCounter() {
       document.getElementById('score-counter').innerHTML = `Score: ${score}`;
     }
+
+    document.getElementById('prev-button').style.display = 'none';
+    document.getElementById('next-button').style.display = 'none';
   </script>
 </body>
 </html>
 
-           
+       
